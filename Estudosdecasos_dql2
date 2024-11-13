@@ -1,0 +1,162 @@
+#CREATE DATABASE EXERCICIO2;
+USE EXERCICIO2;
+
+CREATE TABLE IF NOT EXISTS GRUPOS(
+ID_GRUPO INT PRIMARY KEY,
+NOME_GRUPO VARCHAR(100) NOT NULL,
+DESCRICAO_GRUPO TEXT NOT NULL);
+
+CREATE TABLE IF NOT EXISTS USUARIOS(
+ID_USUARIO INT PRIMARY KEY,
+NOME_USUARIO VARCHAR(100) NOT NULL,
+SOBRENOME VARCHAR(100) NOT NULL,
+EMAIL VARCHAR(20) NOT NULL);
+
+CREATE TABLE IF NOT EXISTS POSTAGENS(
+ID_POST INT PRIMARY KEY,
+TEXTO_POST TEXT,
+IMAGEM_POST BLOB,
+DATA_HORA DATETIME NOT NULL,
+USUARIO INT NOT NULL,
+CONSTRAINT FK_USUARIO FOREIGN KEY (USUARIO) REFERENCES USUARIOS(ID_USUARIO));
+
+CREATE TABLE IF NOT EXISTS COMENTARIOS(
+ID_COMENTARIO INT PRIMARY KEY,
+TEXTO TEXT NOT NULL,
+DATAHORA DATETIME NOT NULL,
+USUARIO INT NOT NULL,
+POST INT NOT NULL,
+CONSTRAINT FK_COMM_USUARIO FOREIGN KEY(USUARIO) REFERENCES USUARIOS(ID_USUARIO),
+CONSTRAINT FK_COMM_POST FOREIGN KEY(POST) REFERENCES POSTAGENS(ID_POST));
+
+CREATE TABLE IF NOT EXISTS USUARIOS_GRUPOS(
+UG_USUARIO INT,
+UG_GRUPO INT,
+PRIMARY KEY(UG_USUARIO,UG_GRUPO),
+CONSTRAINT FK_UG_USUARIO FOREIGN KEY(UG_USUARIO) REFERENCES USUARIOS(ID_USUARIO),
+CONSTRAINT FK_UG_GRUPO FOREIGN KEY(UG_GRUPO) REFERENCES GRUPOS(ID_GRUPO));
+
+CREATE TABLE IF NOT EXISTS USUARIOS_SEGUIDORES(
+US_USUARIO INT,
+US_SEGUIDOR INT,
+PRIMARY KEY(US_USUARIO,US_SEGUIDOR),
+CONSTRAINT FK_US_USUARIO FOREIGN KEY(US_USUARIO) REFERENCES USUARIOS(ID_USUARIO),
+CONSTRAINT FK_US_SEGUIDOR FOREIGN KEY(US_SEGUIDOR) REFERENCES USUARIOS(ID_USUARIO));
+
+
+INSERT INTO USUARIOS (ID_USUARIO, NOME_USUARIO, SOBRENOME, EMAIL) VALUES
+(1, 'Alice', 'Silva', 'alice@mail.com'),
+(2, 'Bob', 'Oliveira', 'bob@mail.com'),
+(3, 'Carol', 'Santos', 'carol@mail.com'),
+(4, 'Dave', 'Pereira', 'dave@mail.com'),
+(5, 'Eve', 'Costa', 'eve@mail.com'),
+(6, 'Frank', 'Souza', 'frank@mail.com'),
+(7, 'Grace', 'Almeida', 'grace@mail.com');
+
+-- Inserindo grupos
+INSERT INTO GRUPOS (ID_GRUPO, NOME_GRUPO, DESCRICAO_GRUPO) VALUES
+(1, 'Tech Enthusiasts', 'Grupo para amantes de tecnologia'),
+(2, 'Music Lovers', 'Grupo para fãs de música'),
+(3, 'Nature Explorers', 'Grupo para exploradores da natureza'),
+(4, 'Fitness Fanatics', 'Grupo para apaixonados por fitness'),
+(5, 'Foodies', 'Grupo para entusiastas de gastronomia'),
+(6, 'Book Club', 'Grupo para leitores ávidos'),
+(7, 'Art Aficionados', 'Grupo para apreciadores de arte');
+
+-- Inserindo postagens
+INSERT INTO POSTAGENS (ID_POST, TEXTO_POST, IMAGEM_POST, DATA_HORA, USUARIO) VALUES
+(1, 'Explorando novas tecnologias!', NULL, '2024-10-01 10:00:00', 1),
+(2, 'Meu livro favorito do mês.', NULL, '2024-10-02 12:15:00', 2),
+(3, 'A música é a linguagem da alma.', NULL, '2024-10-03 15:30:00', 3),
+(4, 'Saúde é riqueza!', NULL, '2024-10-04 09:00:00', 4),
+(5, 'Preparando um prato delicioso.', NULL, '2024-10-05 18:20:00', 5),
+(6, 'Arte abstrata é fascinante.', NULL, '2024-10-06 13:45:00', 6),
+(7, 'Aventuras na natureza.', NULL, '2024-10-07 11:30:00', 7);
+
+-- Inserindo comentários
+INSERT INTO COMENTARIOS (ID_COMENTARIO, TEXTO, DATAHORA, USUARIO, POST) VALUES
+(1, 'Interessante!', '2024-10-01 11:00:00', 2, 1),
+(2, 'Muito bom!', '2024-10-02 13:00:00', 3, 2),
+(3, 'Concordo totalmente.', '2024-10-03 16:00:00', 4, 3),
+(4, 'Ótima postagem!', '2024-10-04 10:00:00', 5, 4),
+(5, 'Vou tentar também!', '2024-10-05 19:00:00', 6, 5),
+(6, 'Adoro esse estilo.', '2024-10-06 14:00:00', 7, 6),
+(7, 'Muito inspirador.', '2024-10-07 12:00:00', 1, 7);
+
+-- Inserindo usuários em grupos
+INSERT INTO USUARIOS_GRUPOS (UG_USUARIO, UG_GRUPO) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5),
+(6, 6),
+(7, 7);
+
+-- Inserindo seguidores
+INSERT INTO USUARIOS_SEGUIDORES (US_USUARIO, US_SEGUIDOR) VALUES
+(1, 2),
+(2, 3),
+(3, 4),
+(4, 5),
+(5, 6),
+(6, 7),
+(7, 1);
+
+# 1. Liste todos os usuários e os grupos aos quais estão associados.
+SELECT COUNT(*) FROM ESPECTADORES;
+
+# 2. Exiba a lista de postagens com o nome do usuário que fez cada postagem.
+SELECT COUNT(*) FROM FILMES;
+
+# 3. Liste os comentários feitos em cada postagem, mostrando o texto do comentário, a data/hora e o nome do usuário que comentou.
+#SÓ VAI TER GROUP BY SE TIVER ALGUMA FUNÇÃO DE AGREGAÇÃO
+SELECT NOME, CAPACIDADE
+FROM SALAS
+WHERE CAPACIDADE > 100;
+
+# 4. Encontre todos os usuários e o número de grupos em que cada um participa.
+SELECT NOME_ESPEC, DATA_NACS
+FROM ESPECTADORES
+WHERE TIMESTAMPDIFF(YEAR, DATA_NASC, CURDATE()) > 30;
+
+# 5. Exiba a quantidade total de postagens feitas por cada usuário.
+#CONCAT=EM MIN
+SHOW COLUMNS FROM FILMES;
+SELECT CONCAT(ROUND(AVG(TEMPO_FILME),0),'MINUTOS') AS 'TEMPO MÉDIO';
+
+# 6. Liste todos os usuários e os seguidores de cada um.
+
+# 7. Exiba a lista de postagens de um determinado usuário (filtrando pelo nome do usuário
+-- SHOW FIELDS FROM USUARIOS_GRUPOS;
+SELECT UG_GRUPO, COUNT(UG_GRUPO)
+FROM USUARIO_GRUPOS
+GROUP BY UG_GRUPO;
+
+# 8. Encontre todos os grupos e o número de usuários em cada grupo.
+SELECT S.ID_SALA, COUNT(*)
+FROM SESSOES AS SS
+JOIN SALAS AS S ON S.ID_SALA = SS
+
+-- SHOW COLUMNS FROM USUARIOS
+SELECT *
+FROM USUARIOS
+WHERE EMAIL LIKE %MAIL.COM%;
+
+# 9. Liste o nome dos usuários e as postagens que eles comentaram, mostrando a data e o texto dos comentários.
+-- SHOW COLUMNS FROM INGRESSOS;
+SELECT HORA_INGRESSOS
+FROM INGRESSOS
+WHERE DATA_INGRESSO = '2024-11=03'
+ORDER BY HORA_INGRESSO
+LIMIT 1;
+#OU SIMPLIFICADO
+SELECT MIN(HORA_INGRESSO)
+FROM INGRESSOS
+WHERE DATA_INGRESSO = '2024-11-03';
+
+# 10. Mostre o nome dos usuários que seguem um usuário específico, filtrando pelo nome do usuário seguido.
+SHOW COLUMNS FROM POSTAGENS;
+SELECT (DATA_HORA), COUNT(*)
+FROM POSTAGENS
+GROUP BY DATE(DATA_HORA);
